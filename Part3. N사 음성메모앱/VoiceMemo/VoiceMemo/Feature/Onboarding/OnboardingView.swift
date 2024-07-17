@@ -6,17 +6,18 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct OnboardingView: View {
     @StateObject private var pathModel = PathModel()
-    @StateObject private var onboadingViewModel = OnboardingViewModel()
+    @StateObject private var onboardingViewModel = OnboardingViewModel()
     @StateObject private var todoListViewModel = TodoListViewModel()
     @StateObject private var memoListViewModel = MemoListViewModel()
     
     var body: some View {
         NavigationStack(path: $pathModel.paths) {
             // TODO: 화면 전환 구현 필요
-            OnboardingContentView(onboadingViewModel: onboadingViewModel)
+            OnboardingContentView(onboardingViewModel: onboardingViewModel)
                 .navigationDestination(for: PathType.self) { pathType in
                     switch pathType {
                     case .homeView:
@@ -35,8 +36,8 @@ struct OnboardingView: View {
                             : .init(memo: memo ?? .init(title: "", content: "", date: .now)),
                             isCreateMode: isCreateMode
                         )
-                            .navigationBarBackButtonHidden()
-                            .environmentObject(memoListViewModel)
+                        .navigationBarBackButtonHidden()
+                        .environmentObject(memoListViewModel)
                     }
                 }
         }
@@ -47,20 +48,21 @@ struct OnboardingView: View {
 
 // MARK: - 온보딩 컨텐츠 뷰
 private struct OnboardingContentView: View {
-    @ObservedObject var onboadingViewModel: OnboardingViewModel
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
     
-    fileprivate init(onboadingViewModel: OnboardingViewModel) {
-        self.onboadingViewModel = onboadingViewModel
+    fileprivate init(onboardingViewModel: OnboardingViewModel) {
+        self.onboardingViewModel = onboardingViewModel
     }
     
     fileprivate var body: some View {
         VStack {
+            
             // 온보딩 셀리스트 뷰
-            OnboardingCellListView(viewModel: onboadingViewModel)
+            OnboardingCellListView(onboardingViewModel: onboardingViewModel)
             
             Spacer()
             // 시작 버튼 뷰
-            StartBtnView()
+            StartBtnView(onboardingViewModel: onboardingViewModel)
         }
         .ignoresSafeArea()
     }
@@ -69,26 +71,27 @@ private struct OnboardingContentView: View {
 
 // MARK: - 온보딩 셀 리스트 뷰
 private struct OnboardingCellListView: View {
-    @ObservedObject var viewModel: OnboardingViewModel
-    @State private var selectedIndex: Int
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
     
-    fileprivate init(viewModel: OnboardingViewModel, selectedIndex: Int = 0) {
-        self.viewModel = viewModel
-        self.selectedIndex = selectedIndex
+    fileprivate init(onboardingViewModel: OnboardingViewModel) {
+        self.onboardingViewModel = onboardingViewModel
     }
     
     fileprivate var body: some View {
-        TabView(selection: $selectedIndex) {
-            ForEach(Array(viewModel.onBoardingContnts.enumerated()), id: \.element) { index, onboardingContent in
-                OnboardingCellView(onboardingContent: onboardingContent)
-                    .tag(index)
+        TabView(selection: $onboardingViewModel.onBoardingIndex) {
+            ForEach(Array(onboardingViewModel.onBoardingContnts.enumerated()), id: \.element) { index, onboardingContent in
+                OnboardingCellView(
+                    onboardingViewModel: onboardingViewModel,
+                    onboardingContent: onboardingContent
+                )
+                .tag(index)
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))  // 스와이프해서 넘기기
+        .tabViewStyle(.page(indexDisplayMode: .never))
         .frame(width: UIScreen.main.bounds.width,
                height: UIScreen.main.bounds.height / 1.5)
         .background(
-            selectedIndex % 2 == 0 ? Color.ctmSky : Color.ctmBackgroundGreen
+            onboardingViewModel.onBoardingIndex % 2 == 0 ? Color.ctmSky : Color.ctmBackgroundGreen
         )
         .clipped()
     }
@@ -96,11 +99,15 @@ private struct OnboardingCellListView: View {
 
 // MARK: - 온보딩 셀 뷰
 private struct OnboardingCellView: View {
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
     private var onboardingContent: OnboardingContent
     
-    fileprivate init(onboardingContent: OnboardingContent) {
-        self.onboardingContent = onboardingContent
-    }
+    fileprivate init(
+        onboardingViewModel: OnboardingViewModel,
+        onboardingContent: OnboardingContent) {
+            self.onboardingViewModel = onboardingViewModel
+            self.onboardingContent = onboardingContent
+        }
     
     fileprivate var body: some View {
         VStack {
@@ -108,24 +115,34 @@ private struct OnboardingCellView: View {
                 .resizable()
                 .scaledToFit()
             
-            HStack {
+            VStack {
                 Spacer()
+                    .frame(height: 10)
                 
-                VStack {
+                CustomPageControl(
+                    currentPage: $onboardingViewModel.onBoardingIndex,
+                    numberOfPages: onboardingViewModel.onBoardingContnts.count
+                )
+                
+                Spacer()
+                    .frame(height: 20)
+                
+                HStack {
                     Spacer()
-                        .frame(height: 46)
                     
-                    Text(onboardingContent.title)
-                        .font(.system(size: 16, weight: .bold))
+                    VStack {
+                        Text(onboardingContent.title)
+                            .font(.system(size: 16, weight: .bold))
+                        
+                        Spacer()
+                            .frame(height: 5)
+                        
+                        Text(onboardingContent.subTitle)
+                            .font(.system(size: 16))
+                    }
                     
                     Spacer()
-                        .frame(height: 5)
-                    
-                    Text(onboardingContent.subTitle)
-                        .font(.system(size: 16))
                 }
-                
-                Spacer()
             }
             .background(Color.ctmWhite)
             .clipShape(RoundedRectangle(cornerRadius: 0))
@@ -134,17 +151,38 @@ private struct OnboardingCellView: View {
     }
 }
 
+// MARK: - 커스텀 페이지 컨트롤
+private struct CustomPageControl: UIViewRepresentable {
+    @Binding var currentPage: Int
+    var numberOfPages: Int
+    
+    func makeUIView(context: Context) -> UIPageControl {
+        let control = UIPageControl()
+        control.numberOfPages = numberOfPages
+        control.currentPageIndicatorTintColor = .black
+        control.pageIndicatorTintColor = .gray
+        return control
+    }
+    
+    func updateUIView(_ control: UIPageControl, context: Context) {
+        control.currentPage = currentPage
+    }
+}
+
 
 // MARK: - 시작하기 버튼 뷰
 private struct StartBtnView: View {
     @EnvironmentObject private var pathModel: PathModel
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
     
     fileprivate var body: some View {
         Button {
-            pathModel.paths.append(.homeView)  // 배열에 path를 추가해줌
+            onboardingViewModel.nextBtnTapped {
+                pathModel.paths.append(.homeView)
+            }
         } label: {
             HStack {
-                Text("시작하기")
+                Text(onboardingViewModel.isLastOnBoardingItem ? "시작하기" : "다음으로")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(.customGreen)
                 
@@ -154,7 +192,7 @@ private struct StartBtnView: View {
             }
         }
         .padding(.bottom, 50)
-
+        
     }
 }
 
