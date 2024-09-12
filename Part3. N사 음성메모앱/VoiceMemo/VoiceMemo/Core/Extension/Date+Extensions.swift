@@ -26,7 +26,7 @@ extension Date {
         let nowStartOfDay = calendar.startOfDay(for: now)  // 현재
         let dateStartOfDay = calendar.startOfDay(for: self)  // 작성한 날짜
         let numOfDaysDifference = calendar.dateComponents([.day], from: nowStartOfDay, to: dateStartOfDay).day!
-        
+
         if numOfDaysDifference == 0 {
             return "오늘"
         } else {
@@ -35,6 +35,16 @@ extension Date {
             formatter.dateFormat = "M월 d일 E요일"
             return formatter.string(from: self)
         }
+        
+        // 이 코드가 더 짧을듯
+//        if calendar.isDateInToday(self) {
+//            return "오늘"
+//        } else {
+//            let formatter = DateFormatter()
+//            formatter.locale = Locale(identifier: "ko_KR")
+//            formatter.dateFormat = "M월 d일 E요일"
+//            return formatter.string(from: self)
+//        }
     }
     
     /// ex - 2022.07.14

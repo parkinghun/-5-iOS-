@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="HomeRankingContainerCell" customModule="KTV" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="349"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="349"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJ1-fY-aMR">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="328"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="랭킹 리스트" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6HY-UE-GWm">
+                                <rect key="frame" x="21" y="21" width="82.666666666666671" height="21"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <color key="textColor" name="main-wh"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="gUF-XC-gP0">
+                                <rect key="frame" x="0.0" y="63" width="320" height="265"/>
+                                <color key="backgroundColor" name="bg"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="20" id="APZ-JK-w14">
+                                    <size key="itemSize" width="130" height="230"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="21" minY="21" maxX="21" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" name="bg"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="gUF-XC-gP0" secondAttribute="bottom" id="RGQ-AN-dym"/>
+                            <constraint firstItem="6HY-UE-GWm" firstAttribute="top" secondItem="fJ1-fY-aMR" secondAttribute="top" constant="21" id="Yrw-VQ-drA"/>
+                            <constraint firstItem="6HY-UE-GWm" firstAttribute="leading" secondItem="fJ1-fY-aMR" secondAttribute="leading" constant="21" id="ahU-bT-GUA"/>
+                            <constraint firstItem="gUF-XC-gP0" firstAttribute="top" secondItem="6HY-UE-GWm" secondAttribute="bottom" constant="21" id="jau-I1-56T"/>
+                            <constraint firstAttribute="trailing" secondItem="gUF-XC-gP0" secondAttribute="trailing" id="m4m-UU-3oI"/>
+                            <constraint firstItem="gUF-XC-gP0" firstAttribute="leading" secondItem="fJ1-fY-aMR" secondAttribute="leading" id="zjC-rd-gGU"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" name="bg"/>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="fJ1-fY-aMR" secondAttribute="bottom" constant="21" id="9ew-Cg-450"/>
+                    <constraint firstItem="fJ1-fY-aMR" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="FhX-TM-urf"/>
+                    <constraint firstItem="fJ1-fY-aMR" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="QDo-CG-grb"/>
+                    <constraint firstAttribute="trailing" secondItem="fJ1-fY-aMR" secondAttribute="trailing" id="xWz-gU-jwq"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="collectionView" destination="gUF-XC-gP0" id="mDr-Ve-uC0"/>
+            </connections>
+            <point key="canvasLocation" x="124" y="-11"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <namedColor name="bg">
+            <color red="0.10588235294117647" green="0.10588235294117647" blue="0.10588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="main-wh">
+            <color red="0.99607843137254903" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

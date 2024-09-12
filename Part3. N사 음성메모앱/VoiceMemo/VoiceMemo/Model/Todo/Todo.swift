@@ -13,8 +13,7 @@ struct Todo: Hashable {
     var day: Date
     var selected: Bool  // 완료되었는지
     
-    var convertedDayAndTime: String {
-        // 오늘 - 오후 03:00에 알림
+    var convertedDayAndTime: String {  // 오늘 - 오후 03:00에 알림
         String("\(day.formattedDay) - \(time.formattedTime)에 알림")
     }
 }

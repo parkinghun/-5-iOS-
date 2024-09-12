@@ -15,12 +15,13 @@ import AVFoundation
 
 // 음성 메모를 담당하는 서비스 객체
 final class VoiceRecorderViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate{
+    // 알럿 관련 프로퍼티
     @Published var isDisplayRemoveVoiceRecoderAlert: Bool  // 삭제 알럿
     @Published var isDisplayAlert: Bool  // 에러 알럿
     @Published var alertMessage: String
     
     /// 음성메모 녹음 관련 프로퍼티
-    var audioRecoder: AVAudioRecorder?
+    var audioRecorder: AVAudioRecorder?
     @Published var isRecording: Bool  // 녹음중
     
     /// 음성메모 재생 관련 프로퍼티
@@ -29,7 +30,6 @@ final class VoiceRecorderViewModel: NSObject, ObservableObject, AVAudioPlayerDel
     @Published var isPaused: Bool  // 재생 중지?
     @Published var playedTime: TimeInterval
     private var progressTimer: Timer?
-    
     
     /// 음성메모된 파일(데이터)
     var recordedFiles: [URL]
@@ -62,18 +62,17 @@ final class VoiceRecorderViewModel: NSObject, ObservableObject, AVAudioPlayerDel
 
 
 // MARK: - 뷰 관련 메서드(상태, 유저 인터액션)
+// 셀 클릭시, 삭제버튼 클릭 시, 알럿 관련 메서드
 extension VoiceRecorderViewModel {
     func voiceRecoderCellTapped(_ recordedFile: URL) {
         if selectedRecordedFile != recordedFile {
-            // 선택한 녹음 파일이 현재 선택되어있는 녹음파일이 아니면
-            // TODO: - 재생정지 메서드 호출
+            // 선택한 녹음 파일이 현재 선택되어있는 녹음파일이 아니면 재생정지
             stopPlaying()
             selectedRecordedFile = recordedFile
-        }  // 선택한 녹음 파일이 현재 선택되어있는 녹음파일이면 딱히 해줄 건 없음
+        }
     }
     
     func removeBtnTapped() {
-        // TODO: - 삭제 얼럿 노출을 위한 상태 변경 메서드 호출
         setIsDisplayRemoveVoiceRecorderAlert(true)
     }
     
@@ -81,7 +80,6 @@ extension VoiceRecorderViewModel {
     func removeSelectedVoiceRecord() {
         guard let fileToRemove = selectedRecordedFile,
               let indexToRemove = recordedFiles.firstIndex(of: fileToRemove) else {
-            // TODO: - 선택된 음성메모를 찾을 수 없다는 에러 얼럿 노출
             displayAlert(message: "선택된 음성메모 파일을 찾을 수 없습니다.")
             return
         }
@@ -90,12 +88,9 @@ extension VoiceRecorderViewModel {
             try FileManager.default.removeItem(at: fileToRemove)
             recordedFiles.remove(at: indexToRemove)
             selectedRecordedFile = nil
-            // TODO: - 재생 정지 메서드 호출
             stopPlaying()
-            // TODO: - 삭제 성공 얼럿 노출
             displayAlert(message: "선택된 음성메모 파일을 성공적으로 삭제했습니다.")
         } catch {
-            // TODO: - 삭제 실패 오류 얼럿 노출
             // 실제로는 오류처리를 하고 확인을 눌렀을 때, 다시 시도를 하거나 다시 서버 데이터를 호출하는 동작이 필요함. 그러나 로컬에서 알럿을 표현하는 방법으로만 진행
             displayAlert(message: "선택된 음성메모 파일 삭제 중 오류가 발생했습니다.")
         }
@@ -119,31 +114,25 @@ extension VoiceRecorderViewModel {
     }
 }
 
-
 // MARK: - 음성메모 녹음 관련 메서드
 extension VoiceRecorderViewModel {
     func recorderBtnTapped() {
         selectedRecordedFile = nil
         
-        if isPlaying {  // 재생 중일 때
-            // TODO: - 재생 정지 메서드 호출
+        if isPlaying {
             stopPlaying()
-            
-            // TODO: - 재생 시작 메서드 호츌
             startRecording()
-        } else if isRecording {  // 녹음 중일 때
-            // TODO: - 녹음 정지 메서드 호출
+        } else if isRecording {
             stopRecording()
-        } else {  // 재생도 녹음도 안하고 있을 때
-            // TODO: - 녹음 시작 메서드 호출
+        } else {
             startRecording()
         }
     }
     
-    // 녹음 시작하기
     private func startRecording() {
+        // 해당 녹음파일이 저장될 위치를 파일 매니저를 통해 저장되는 파일 이름을 담아 url을 생성한다.
         let fileURL = getDocumentsDirectory().appendingPathComponent("새로운 녹음 \(recordedFiles.count + 1)")
-        let settings = [
+        let settings = [  // 녹음 파일이 어떤 형식으로 저장될지 설정해준다.
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),  // 오디오 녹음 파일의 포맷 설정
             AVSampleRateKey: 12000,  // 오디오 샘플링 비율 설정
             AVNumberOfChannelsKey: 1,  // 오디오 녹음 파일의 채널 수 지정
@@ -151,8 +140,9 @@ extension VoiceRecorderViewModel {
         ]
         
         do {
-            audioRecoder = try AVAudioRecorder(url: fileURL, settings: settings)
-            audioRecoder?.record()
+            // AudioRecorder 인스턴스 생성시 어디에 저장될지 url과 어떤 설정을 가질지 settings 파라미터를 두어 인스턴스를 생성한다.
+            audioRecorder = try AVAudioRecorder(url: fileURL, settings: settings)
+            audioRecorder?.record()
             self.isRecording = true
         } catch {
             displayAlert(message: "음성메모 녹음 중 오류가 발생했습니다.")
@@ -161,8 +151,8 @@ extension VoiceRecorderViewModel {
     
     // 녹음 종료하기
     private func stopRecording() {
-        audioRecoder?.stop()  // 녹음 중지
-        self.recordedFiles.append(self.audioRecoder!.url)  // 현재까지 녹음한 파일 추가
+        audioRecorder?.stop()  // 녹음 중지
+        self.recordedFiles.append(self.audioRecorder!.url)  // 해당 녹음 파일의 url 경로를 추가해줌
         self.isRecording = false
     }
     
@@ -175,7 +165,6 @@ extension VoiceRecorderViewModel {
 
 // MARK: - 음성메모 재생 관련
 extension VoiceRecorderViewModel {
-    // 음성메모 파일 재생
     func startPlaying(recordingURL: URL) {
         do {
             // 어떤 파일을 재생할지 contentsOf 파라미터에 받아온 음성메모 파일 url을 주입하여 생성
@@ -187,12 +176,10 @@ extension VoiceRecorderViewModel {
             self.progressTimer = Timer.scheduledTimer(
                 withTimeInterval: 0.1,
                 repeats: true) { _ in
-                    // TODO: - 현재 시간 업데이트 메서드 호출
                     self.updateCurrentTime()
                 }
         } catch {
             displayAlert(message: "음성메모 재생 중 오류가 발생했습니다.")
-            
         }
     }
     

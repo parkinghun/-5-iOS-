@@ -14,7 +14,7 @@ final class OnboardingViewModel: ObservableObject {
     var isLastOnBoardingItem: Bool {
         onBoardingContnts.count == onBoardingIndex + 1 ? true : false
     }
-    
+
     init(
         onBoardingContnts: [OnboardingContent] = [
             .init(imageFileName: "onboarding_1", title: "오늘의 할 일", subTitle: "To do list로 언제 어디서든 해야할 일을 한눈에"),
