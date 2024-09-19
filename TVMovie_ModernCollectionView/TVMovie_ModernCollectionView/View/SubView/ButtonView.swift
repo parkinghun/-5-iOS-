@@ -7,12 +7,20 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class ButtonView: UIView {
+  private let viewModel = MainViewModel()
+  private var disposeBag = DisposeBag()
+  
+  var tvTrigger = BehaviorSubject<Int>(value: 1)
+  var movieTrigger = PublishSubject<Void>()
+  
   let tvButton: UIButton = {
     let bt = UIButton()
     bt.setTitle("TV", for: .normal)
-    bt.setTitleColor(.black, for: .normal)
+    bt.setTitleColor(.white, for: .normal)
+    bt.backgroundColor = .systemGreen
     bt.layer.masksToBounds = true
     bt.layer.cornerRadius = 8
     bt.configuration = .bordered()
@@ -22,7 +30,8 @@ final class ButtonView: UIView {
   let movieButton: UIButton = {
     let bt = UIButton()
     bt.setTitle("Movie", for: .normal)
-    bt.setTitleColor(.black, for: .normal)
+    bt.setTitleColor(.label, for: .normal)
+    bt.backgroundColor = .systemGray
     bt.layer.masksToBounds = true
     bt.layer.cornerRadius = 8
     bt.configuration = .bordered()
@@ -37,6 +46,14 @@ final class ButtonView: UIView {
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  public func setButtonBackgroundColor(isTvButtonTapped: Bool) {
+    self.tvButton.backgroundColor = isTvButtonTapped ? .systemGreen : .systemGray
+    self.tvButton.setTitleColor(isTvButtonTapped ? .white : .label , for: .normal)
+    
+    self.movieButton.backgroundColor = isTvButtonTapped ? .systemGray : .systemGreen
+    self.movieButton.setTitleColor(isTvButtonTapped ? .label : .white, for: .normal)
   }
   
   private func setUI() {

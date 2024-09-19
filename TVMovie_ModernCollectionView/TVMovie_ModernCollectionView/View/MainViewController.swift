@@ -10,12 +10,14 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-// TODO: - "헤더 뷰 보여주기"
+// TODO: - "헤더 뷰 공부하기"
+
+// TODO: - 구현할 사항
 /*
-  헤더뷰를 재사용성이 높게 만들기
-  헤더뷰의 타이틀을 따로 적어놓을 수 있는 변수를 어딘가에 만들기
-  만약 헤더뷰의 타이틀이 있다면? 헤더뷰 넣고, 없다면 없는채로 ㄱㄱ
-  헤더뷰의 타이틀을 Section에서 연관값을 만들어야 하는지 알아보기 -> 더 좋은 방법이 있는지 서칭
+ 1. 상세뷰 보여주기(네비게이션 컨트롤러 사용하기)
+ 2. TV - Searching
+ 3. Pagenation - infiniteScroll (throttle)
+ 4. 에러처리 -> 알럿 띄우기
  */
 
 // 레이아웃 기준
@@ -96,11 +98,13 @@ class MainViewController: UIViewController {
     buttonView.tvButton.rx.tap.bind { [weak self] in
       guard let self = self else { return }
       self.tvTrigger.onNext(1)
+      buttonView.setButtonBackgroundColor(isTvButtonTapped: true)
     }.disposed(by: disposeBag)
     
     buttonView.movieButton.rx.tap.bind { [weak self] in
       guard let self = self else { return }
       self.movieTrigger.onNext(Void())
+      buttonView.setButtonBackgroundColor(isTvButtonTapped: false)
     }.disposed(by: disposeBag)
   }
   
