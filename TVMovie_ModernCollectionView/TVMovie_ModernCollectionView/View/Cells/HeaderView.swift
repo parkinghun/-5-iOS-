@@ -12,7 +12,7 @@ final class HeaderView: UICollectionReusableView {
   static let id = "HeaderView"
   let titleLabel: UILabel = {
     let label = UILabel()
-    label.font = .systemFont(ofSize: 20, weight: .bold)
+    label.font = .systemFont(ofSize: 30, weight: .bold)
     return label
   }()
   

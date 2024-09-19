@@ -10,7 +10,13 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-#warning("이미지와 텍스트가 겹치는 문제 발생, 각 셀들의 레이아웃 살펴보기")
+// TODO: - "헤더 뷰 보여주기"
+/*
+  헤더뷰를 재사용성이 높게 만들기
+  헤더뷰의 타이틀을 따로 적어놓을 수 있는 변수를 어딘가에 만들기
+  만약 헤더뷰의 타이틀이 있다면? 헤더뷰 넣고, 없다면 없는채로 ㄱㄱ
+  헤더뷰의 타이틀을 Section에서 연관값을 만들어야 하는지 알아보기 -> 더 좋은 방법이 있는지 서칭
+ */
 
 // 레이아웃 기준
 fileprivate enum Section: Hashable {
@@ -207,7 +213,6 @@ class MainViewController: UIViewController {
     group.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10)
     
     let section = NSCollectionLayoutSection(group: group)
-//    section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10)
     section.orthogonalScrollingBehavior = .groupPaging
     return section
   }
@@ -218,7 +223,7 @@ class MainViewController: UIViewController {
       heightDimension: .fractionalHeight(1.0)
     )
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
-    item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+    item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20)
     
     let groupSize = NSCollectionLayoutSize(
       widthDimension: .fractionalWidth(0.4),
@@ -228,6 +233,11 @@ class MainViewController: UIViewController {
     
     let section = NSCollectionLayoutSection(group: group)
     section.orthogonalScrollingBehavior = .continuous
+    section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0)
+    
+    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+    section.boundarySupplementaryItems = [header]
     return section
   }
   
@@ -240,10 +250,14 @@ class MainViewController: UIViewController {
     item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
     let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(300))
     let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 3)
-    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
     
     let section = NSCollectionLayoutSection(group: group)
     section.orthogonalScrollingBehavior = .groupPaging
+    section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 8, trailing: 10)
+    
+    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
+    section.boundarySupplementaryItems = [header]
     return section
   }
   
@@ -264,6 +278,22 @@ class MainViewController: UIViewController {
         return cell
       }
     })
+    
+    // TODO: - 공부하기
+    datasource?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView in
+      let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderView.id, for: indexPath)
+      
+      let section = self?.datasource?.sectionIdentifier(for: indexPath.section)
+      switch section {
+      case .moviePopular(header: let title),
+          .movieUpcoming(header: let title):
+        (header as? HeaderView)?.configure(title: title)
+      default:
+        print("Default - Non Header")
+      }
+      
+      return header
+    }
   }
   
 }
