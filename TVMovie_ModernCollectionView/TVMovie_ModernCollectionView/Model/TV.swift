@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct TVListModel {
+struct TVListModel:Decodable {
   let page: Int
   let results: [TV]
 }
 
-struct TV: Decodable {
+struct TV: Decodable, Hashable {
   let id: Int
   let name: String
   let overview: String
   let posterURL: String
-  let firstAirDate: Date?
+  let firstAirDate: String
   let vote: String
   
   enum CodingKeys: String, CodingKey {
@@ -33,7 +33,6 @@ struct TV: Decodable {
   init(from decoder: any Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let posterPath = try container.decode(String.self, forKey: .posterPath)
-    let releaseDateString = try container.decode(String.self, forKey: .firstAirDate)
     let voteAverage = try container.decode(Float.self, forKey: .voteAverage)
     let voteCount = try container.decode(Int.self, forKey: .voteCount)
     
@@ -41,7 +40,7 @@ struct TV: Decodable {
     self.name = try container.decode(String.self, forKey: .name)
     self.overview = try container.decode(String.self, forKey: .overview)
     self.posterURL = "\(APIPath.imageBase.path)\(posterPath)"
-    self.firstAirDate = releaseDateString.formattedDate
+    self.firstAirDate = try container.decode(String.self, forKey: .firstAirDate)
     self.vote = "\(voteAverage) (\(voteCount))"
   }
 }

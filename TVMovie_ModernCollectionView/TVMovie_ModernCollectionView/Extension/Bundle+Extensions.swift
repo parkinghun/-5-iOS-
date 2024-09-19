@@ -13,6 +13,7 @@ extension Bundle {
       print("🙅🏻‍♂️ api 키 가져오기 실패")
       return "err"
     }
+    print("🔐 APIKEY - \(key)")
     return key
   }
 }
