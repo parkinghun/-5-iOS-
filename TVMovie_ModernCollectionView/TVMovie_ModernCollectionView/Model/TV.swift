@@ -34,6 +34,7 @@ struct TV: Decodable, Hashable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let posterPath = try container.decode(String.self, forKey: .posterPath)
     let voteAverage = try container.decode(Float.self, forKey: .voteAverage)
+    let voteAverageString = voteAverage.formattedRoundString
     let voteCount = try container.decode(Int.self, forKey: .voteCount)
     
     self.id = try container.decode(Int.self, forKey: .id)
@@ -41,6 +42,6 @@ struct TV: Decodable, Hashable {
     self.overview = try container.decode(String.self, forKey: .overview)
     self.posterURL = "\(APIPath.imageBase.path)\(posterPath)"
     self.firstAirDate = try container.decode(String.self, forKey: .firstAirDate)
-    self.vote = "\(voteAverage) (\(voteCount))"
+    self.vote = "\(voteAverageString) (\(voteCount))"
   }
 }

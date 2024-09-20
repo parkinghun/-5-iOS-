@@ -10,16 +10,6 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-// TODO: - "헤더 뷰 공부하기"
-
-// TODO: - 구현할 사항
-/*
- 1. 상세뷰 보여주기(네비게이션 컨트롤러 사용하기)
- 2. TV - Searching
- 3. Pagenation - infiniteScroll (throttle)
- 4. 에러처리 -> 알럿 띄우기
- */
-
 // 레이아웃 기준
 fileprivate enum Section: Hashable {
   case tvTopRated
@@ -105,6 +95,21 @@ class MainViewController: UIViewController {
       guard let self = self else { return }
       self.movieTrigger.onNext(Void())
       buttonView.setButtonBackgroundColor(isTvButtonTapped: false)
+    }.disposed(by: disposeBag)
+    
+    // TODO: - 아이템 클릭 시 뷰컨트롤러로 디테일 뷰 띄우기
+    collectionView.rx.itemSelected.bind { [weak self] indexPath in
+      guard let self = self else { return }
+      let item = self.datasource?.itemIdentifier(for: indexPath)
+      switch item {
+      case .commonItem(let content):
+        let vc = ContentDetailViewController()
+        vc.configure(with: content)
+        self.navigationController?.pushViewController(vc, animated: true)
+      default:
+        print(indexPath)
+      }
+      
     }.disposed(by: disposeBag)
   }
   
@@ -283,7 +288,6 @@ class MainViewController: UIViewController {
       }
     })
     
-    // TODO: - 공부하기
     datasource?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath -> UICollectionReusableView in
       let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderView.id, for: indexPath)
       

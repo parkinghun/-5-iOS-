@@ -12,12 +12,14 @@ struct CommonItem: Hashable {
   let title: String
   let vote: String
   let overview: String
+  let releaseDate: String
   
   init(with tv: TV) {
     self.thumbnailURL = tv.posterURL
     self.title = tv.name
     self.vote = tv.vote
     self.overview = tv.overview
+    self.releaseDate = tv.firstAirDate
   }
   
   init(with movie: Movie) {
@@ -25,5 +27,6 @@ struct CommonItem: Hashable {
     self.title = movie.title
     self.vote = movie.vote
     self.overview = movie.overview
+    self.releaseDate = movie.releaseDate
   }
 }
