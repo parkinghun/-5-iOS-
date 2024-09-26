@@ -19,7 +19,8 @@ struct TV: Decodable, Hashable {
   let posterURL: String
   let firstAirDate: String
   let vote: String
-  
+  let contentType: ContentType
+
   enum CodingKeys: String, CodingKey {
     case id
     case name
@@ -43,5 +44,6 @@ struct TV: Decodable, Hashable {
     self.posterURL = "\(APIPath.imageBase.path)\(posterPath)"
     self.firstAirDate = try container.decode(String.self, forKey: .firstAirDate)
     self.vote = "\(voteAverageString) (\(voteCount))"
+    self.contentType = .tv
   }
 }

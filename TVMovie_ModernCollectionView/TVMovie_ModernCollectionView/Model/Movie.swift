@@ -19,6 +19,7 @@ struct Movie: Decodable, Hashable {
   let posterURL: String
   let releaseDate: String
   let vote: String
+  var contentType: ContentType
   
   enum CodingKeys: String, CodingKey {
     case id
@@ -43,5 +44,6 @@ struct Movie: Decodable, Hashable {
     self.posterURL = "\(APIPath.imageBase.path)\(posterPath)"
     self.releaseDate = try container.decode(String.self, forKey: .releaseDate)
     self.vote = "\(voteAverageString) (\(voteCount))"
+    self.contentType = .movie
   }
 }

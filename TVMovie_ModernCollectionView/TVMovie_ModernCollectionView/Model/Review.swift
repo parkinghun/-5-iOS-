@@ -7,11 +7,16 @@
 
 import Foundation
 
+struct ReviewListModel: Decodable {
+  let page: Int
+  let results: [Review]
+}
+
 struct Review: Decodable {
   let id: String
   let author: Author
   let content: String
-  let createdAt: Date?
+  let createdAt: String
   
   enum CodingKeys: String, CodingKey {
     case id
@@ -27,12 +32,12 @@ struct Review: Decodable {
     self.id = try container.decode(String.self, forKey: .id)
     self.author = try container.decode(Author.self, forKey: .author)
     self.content = try container.decode(String.self, forKey: .content)
-    self.createdAt = createdAtString.formattedReviewDate
+    self.createdAt = createdAtString
   }
 }
 
 struct Author: Decodable {
-  let name: String?
+  let name: String
   let username: String
   let avatarURL: String
   let rating: Float
@@ -47,7 +52,7 @@ struct Author: Decodable {
   init(from decoder: any Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     
-    self.name = try container.decodeIfPresent(String.self, forKey: .name)
+    self.name = try container.decode(String.self, forKey: .name)
     self.username = try container.decode(String.self, forKey: .username)
     self.rating = try container.decode(Float.self, forKey: .rating)
     if let avatarPath = try container.decodeIfPresent(String.self, forKey: .avatarPath) {

@@ -19,13 +19,19 @@ final class Network<T: Decodable> {
     self.queue = .init(qos: .background)
   }
   
-  func getItemList(base: String, isEnglish: Bool = false, page: Int? = nil) -> Observable<T> {
+  func getItemList(base: String, isEnglish: Bool = false, page: Int? = nil, query: String? = nil) -> Observable<T> {
     var fullPath = "\(endpoint)\(base)?api_key=\(apiKey)&language=\(isEnglish ? "en" : "ko")"
     
     if let page = page {
       fullPath += "&page=\(page)"
     }
     
+    // 비영어권언어나 특수 문자는 URL에 직접 포함할 수 없기 때문에 Percent Encoding 해줘야 한다.
+    if let query = query?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+      fullPath += "&query=\(query)"
+    }
+    
+    print("🐶 Path: \(fullPath)")
     return RxAlamofire.data(.get, fullPath)
       .observe(on: queue)
       .debug()
@@ -34,6 +40,4 @@ final class Network<T: Decodable> {
       }
   }
 }
-
-// 주소에 문제 x
  

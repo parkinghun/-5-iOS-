@@ -12,7 +12,9 @@ enum APIPath {
   case movieNowPlaying
   case moviePopular
   case movieUpcoming
-  case tvReviews(seriesID: String)
+  case tvReviews(seriesID: Int)
+  case movieReviews(movieID: Int)
+  case searchTV
   case endpoint
   case imageBase
   
@@ -23,6 +25,8 @@ enum APIPath {
     case .moviePopular: return "/movie/popular"
     case .movieUpcoming: return "/movie/upcoming"
     case .tvReviews(let id): return "/tv/\(id)/reviews"
+    case .movieReviews(let id): return "/movie/\(id)/reviews"
+    case .searchTV: return "/search/tv"
     case .endpoint: return "https://api.themoviedb.org/3"
     case .imageBase: return "https://image.tmdb.org/t/p/w500"
     }

@@ -60,8 +60,8 @@ final class CommonItemCell: UICollectionViewCell {
     setupConstraints()
   }
   
-  func configure(commonItem: CommonItem) {
-    let imageURL = URL(string: commonItem.thumbnailURL)
+  func configure(commonItem: MediaContent) {
+    let imageURL = URL(string: commonItem.posterURL)
     self.thumbnailImage.kf.setImage(with: imageURL)
     self.titleLabel.text = commonItem.title
     self.voteLabel.text = commonItem.vote

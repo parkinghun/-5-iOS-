@@ -8,17 +8,18 @@
 import Foundation
 import RxSwift
 
-// 20개씩 받도록?
-// TODO: - 1. topRatedList(infiniteScroll) / 2. searchTVList
 final class TVNetwork {
-  private let netowrk: Network<TVListModel>
+  private let network: Network<TVListModel>
   
   init(netowrk: Network<TVListModel>) {
-    self.netowrk = netowrk
+    self.network = netowrk
   }
   
   func getTopRatedList(page: Int) -> Observable<TVListModel> {
-    return netowrk.getItemList(base: APIPath.tvTopRated.path, page: page)
+    return network.getItemList(base: APIPath.tvTopRated.path, page: page)
   }
   
+  func getQuriedList(page: Int, query: String) -> Observable<TVListModel> {
+    return network.getItemList(base: APIPath.searchTV.path, page: page, query: query)
+  }
 }

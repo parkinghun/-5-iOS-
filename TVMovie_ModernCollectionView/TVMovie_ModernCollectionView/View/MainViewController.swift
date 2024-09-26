@@ -18,9 +18,8 @@ fileprivate enum Section: Hashable {
   case movieUpcoming(header: String = "Upcoming Movies")
 }
 
-// 셀 기준
 fileprivate enum Item: Hashable {
-  case commonItem(CommonItem)
+  case commonItem(MediaContent)
   case bannerItem(Movie)
   case verticalItem(Movie)
 }
@@ -52,6 +51,33 @@ class MainViewController: UIViewController {
     return cv
   }()
   
+  private lazy var stackView: UIStackView = {
+    let sv = UIStackView(arrangedSubviews: [contentSearchtextField, buttonView])
+    sv.axis = .vertical
+    sv.alignment = .fill
+    sv.distribution = .fill
+    sv.spacing = 8
+    return sv
+  }()
+  
+  private let contentSearchtextField: UITextField = {
+    let textField = UITextField()
+    textField.layer.borderWidth = 1
+    textField.layer.borderColor = UIColor.gray.cgColor
+    textField.layer.cornerRadius = 8
+    
+    let leftView = UIView(frame: CGRectMake(0, 0, 40, 20))
+    let imageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
+    imageView.tintColor = .black
+    imageView.frame = CGRect(x: 10, y: 0, width: 20, height: 20)
+    
+    leftView.addSubview(imageView)
+    textField.leftView = leftView
+    textField.leftViewMode = .always
+    textField.placeholder = "컨텐츠를 검색하세요"
+    return textField
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     setUI()
@@ -67,17 +93,16 @@ class MainViewController: UIViewController {
   }
   
   private func setUI() {
-    self.view.addSubview(buttonView)
+    self.view.backgroundColor = .white
+    self.view.addSubview(stackView)
     self.view.addSubview(collectionView)
   }
   
   private func setConstraints() {
     let safeArea = self.view.safeAreaLayoutGuide
-    buttonView.snp.makeConstraints { make in
-      make.height.equalTo(80)
-      make.leading.top.trailing.equalTo(safeArea)
-    }
-    
+    stackView.snp.makeConstraints { $0.top.leading.trailing.equalTo(safeArea).inset(14) }
+    contentSearchtextField.snp.makeConstraints { $0.height.equalTo(44) }
+    buttonView.snp.makeConstraints { $0.height.equalTo(80) }
     collectionView.snp.makeConstraints { make in
       make.leading.trailing.bottom.equalToSuperview()
       make.top.equalTo(buttonView.snp.bottom)
@@ -88,6 +113,7 @@ class MainViewController: UIViewController {
     buttonView.tvButton.rx.tap.bind { [weak self] in
       guard let self = self else { return }
       self.tvTrigger.onNext(1)
+      self.contentSearchtextField.isHidden = false
       buttonView.setButtonBackgroundColor(isTvButtonTapped: true)
     }.disposed(by: disposeBag)
     
@@ -95,49 +121,92 @@ class MainViewController: UIViewController {
       guard let self = self else { return }
       self.movieTrigger.onNext(Void())
       buttonView.setButtonBackgroundColor(isTvButtonTapped: false)
+      self.contentSearchtextField.isHidden = true
     }.disposed(by: disposeBag)
     
-    // TODO: - 아이템 클릭 시 뷰컨트롤러로 디테일 뷰 띄우기
     collectionView.rx.itemSelected.bind { [weak self] indexPath in
       guard let self = self else { return }
       let item = self.datasource?.itemIdentifier(for: indexPath)
-      switch item {
-      case .commonItem(let content):
-        let vc = ContentDetailViewController()
-        vc.configure(with: content)
-        self.navigationController?.pushViewController(vc, animated: true)
-      default:
-        print(indexPath)
-      }
       
+      switch item {
+      case .commonItem(let mediaContent):
+        let vc = ContentDetailViewController(id: mediaContent.id, contentType: mediaContent.contentType)
+        vc.configure(with: mediaContent)
+        self.navigationController?.present(vc, animated: true)
+      case .bannerItem(let movieData),
+          .verticalItem(let movieData):
+        let vc = ContentDetailViewController(id: movieData.id, contentType: movieData.contentType)
+        vc.configure(with: movieData)
+        self.navigationController?.present(vc, animated: true)
+      default: break
+      }
     }.disposed(by: disposeBag)
+    
+    // 새로운 아이템을 로드하기 전에 미리 데이터를 불러오는 역할을 한다.
+    collectionView.rx.prefetchItems
+      .filter { [weak self] _ in
+        guard let self = self,
+              self.viewModel.currentContentType == .tv else { return false }
+        return true
+      }
+      .bind { [weak self] indexPath in
+        guard let self = self else { return }
+        
+        let snapshot = self.datasource?.snapshot()
+        
+        guard let lastIndexPath = indexPath.last,
+              let section = self.datasource?.sectionIdentifier(for: lastIndexPath.section),
+              let numberOfItems = snapshot?.numberOfItems(inSection: section),
+              let currentPage = try? self.tvTrigger.value() else { return }
+        
+        if lastIndexPath.row > numberOfItems - 2 {
+          print("Fetch@")
+          self.tvTrigger.onNext(currentPage + 1)
+        }
+      }.disposed(by: disposeBag)
   }
   
+  // TODO: - 텍스트필드에 검색 시 네트워킹 작업을 통해 뷰에 보여주기
   private func bindViewModel() {
     let input = MainViewModel.Input(
       tvTrigger: tvTrigger.asObservable(),
-      movieTrigger: movieTrigger.asObservable()
+      movieTrigger: movieTrigger.asObservable(),
+      searchTrigger: contentSearchtextField.rx.text.orEmpty.distinctUntilChanged()
+        .debounce(.milliseconds(200), scheduler: MainScheduler.instance)
+        .map({ [weak self] in
+          guard let self = self else { return "" }
+          self.tvTrigger.onNext(1)
+          return $0
+        })
     )
+    
     let output = viewModel.transform(input: input)
     
-    output.tvList.bind { [weak self] result in
+    output.tvList
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] result in
+      guard let self = self else { return }
       switch result {
       case .success(let tvList):
-        print(tvList)
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         let section = Section.tvTopRated
-        let items = tvList.map { Item.commonItem(CommonItem(with: $0)) }
+        let items = tvList.map { Item.commonItem( MediaContent(from: $0)) }
         snapshot.appendSections([section])
         snapshot.appendItems(items, toSection: section)
-        self?.datasource?.apply(snapshot)
+        self.datasource?.apply(snapshot)
         
       case .failure(let error):
-        // TODO: - Alert 띄우기
-        print(error)
+        let alert = UIAlertController(title: "에러 발생", message: error.localizedDescription, preferredStyle: .alert)
+        let action = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(action)
+        self.present(alert, animated: true)
       }
     }.disposed(by: disposeBag)
     
-    output.movieResults.bind { [weak self] result in
+    output.movieResults
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] result in
+      guard let self = self else { return }
       switch result {
       case .success(let movieResults):
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -148,7 +217,7 @@ class MainViewController: UIViewController {
         let bannerItem = movieResults.nowPlaying.results
           .map { Item.bannerItem($0) }
         let commonItem = movieResults.popular.results
-          .map { Item.commonItem(CommonItem(with: $0)) }
+          .map { Item.commonItem(MediaContent(from: $0)) }
         let verticalItem = movieResults.upcoming.results
           .map { Item.verticalItem($0) }
         
@@ -157,10 +226,12 @@ class MainViewController: UIViewController {
         snapshot.appendItems(commonItem, toSection: popularSection)
         snapshot.appendItems(verticalItem, toSection: upcomingSection)
         
-        self?.datasource?.apply(snapshot)
+        self.datasource?.apply(snapshot)
       case .failure(let error):
-        print(error)
-        // TODO: - Alert 띄우기
+        let alert = UIAlertController(title: "에러 발생", message: error.localizedDescription, preferredStyle: .alert)
+        let action = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(action)
+        self.present(alert, animated: true)
       }
     }.disposed(by: disposeBag)
   }
