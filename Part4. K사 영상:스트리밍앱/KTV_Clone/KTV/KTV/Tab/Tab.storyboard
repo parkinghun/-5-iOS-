@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--HomeViewController-->
+        <scene sceneID="5AV-Hv-03s">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="HomeViewController" storyboardName="Home" referencedIdentifier="HomeViewController" id="hFH-9R-0z5" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="B3d-uu-JLp"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="86I-xY-ael" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-383" y="448"/>
+        </scene>
+        <!--LiveViewController-->
+        <scene sceneID="KtO-YQ-Q3l">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="LiveViewController" storyboardName="Live" referencedIdentifier="LiveViewController" id="jXI-E8-UoY" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="AqF-dX-bhW"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mBn-Xc-CJW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131" y="446"/>
+        </scene>
+        <!--MyPageViewController-->
+        <scene sceneID="3dB-xY-GfA">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="MyPageViewController" storyboardName="MyPage" referencedIdentifier="MyPageViewController" id="7Mi-jt-AkX" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="mnP-Or-bl5"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KY7-tA-SFz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="597" y="446"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="sH6-nh-iXU">
+            <objects>
+                <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" id="Hcn-FA-BTm" customClass="TabBarController" customModule="KTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9A8-e3-lfS">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <tabBarAppearance key="standardAppearance">
+                            <color key="backgroundColor" name="bg"/>
+                            <color key="shadowColor" name="stroke-light"/>
+                        </tabBarAppearance>
+                        <tabBarAppearance key="scrollEdgeAppearance">
+                            <color key="backgroundColor" name="bg"/>
+                            <color key="shadowColor" name="stroke-light"/>
+                        </tabBarAppearance>
+                    </tabBar>
+                    <connections>
+                        <segue destination="hFH-9R-0z5" kind="relationship" relationship="viewControllers" id="1tE-eB-TJq"/>
+                        <segue destination="jXI-E8-UoY" kind="relationship" relationship="viewControllers" id="j0K-tY-Xud"/>
+                        <segue destination="7Mi-jt-AkX" kind="relationship" relationship="viewControllers" id="5ls-Az-B0V"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yDf-mh-bQs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="130.53435114503816" y="-28.169014084507044"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="bg">
+            <color red="0.10588235294117647" green="0.10588235294117647" blue="0.10588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="stroke-light">
+            <color red="0.34509803921568627" green="0.34509803921568627" blue="0.34509803921568627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

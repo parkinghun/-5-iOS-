@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="kRe-cj-162">
+            <rect key="frame" x="0.0" y="0.0" width="384" height="265"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="FxP-v1-3CR">
+                <rect key="frame" x="0.0" y="0.0" width="384" height="265"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iV5-yC-k81" customClass="HomeRankingContainerCell" customModule="KTV" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="384" height="265"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="uXm-r1-M1w">
+                                <rect key="frame" x="0.0" y="0.0" width="384" height="265"/>
+                                <color key="backgroundColor" name="bg"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="20" id="Kgh-yA-4Ut">
+                                    <size key="itemSize" width="130" height="230"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="21" minY="21" maxX="21" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" name="bg"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="uXm-r1-M1w" secondAttribute="bottom" id="10J-TG-icE"/>
+                            <constraint firstAttribute="trailing" secondItem="uXm-r1-M1w" secondAttribute="trailing" id="FJS-x4-YmG"/>
+                            <constraint firstItem="uXm-r1-M1w" firstAttribute="top" secondItem="iV5-yC-k81" secondAttribute="top" id="GXn-A4-TNo"/>
+                            <constraint firstItem="uXm-r1-M1w" firstAttribute="leading" secondItem="iV5-yC-k81" secondAttribute="leading" id="dg1-Za-GcQ"/>
+                        </constraints>
+                        <connections>
+                            <outlet property="collectionView" destination="uXm-r1-M1w" id="tbw-Y1-gKB"/>
+                        </connections>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="iV5-yC-k81" secondAttribute="bottom" id="ZvO-1W-9gf"/>
+                    <constraint firstItem="iV5-yC-k81" firstAttribute="top" secondItem="FxP-v1-3CR" secondAttribute="top" id="nK7-cg-shw"/>
+                    <constraint firstItem="iV5-yC-k81" firstAttribute="leading" secondItem="FxP-v1-3CR" secondAttribute="leading" id="uR2-y4-MKS"/>
+                    <constraint firstAttribute="trailing" secondItem="iV5-yC-k81" secondAttribute="trailing" id="v94-YU-2lD"/>
+                </constraints>
+            </collectionViewCellContentView>
+            <point key="canvasLocation" x="292" y="-19"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="bg">
+            <color red="0.10588235294117647" green="0.10588235294117647" blue="0.10588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

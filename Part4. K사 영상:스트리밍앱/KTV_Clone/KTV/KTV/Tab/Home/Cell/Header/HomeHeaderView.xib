@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="XRT-2V-fU7" customClass="HomeHeaderView" customModule="KTV" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="66"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FBN-a7-Flm">
+                    <rect key="frame" x="16" y="13" width="350" height="24"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="zjo-FY-eKh">
+                            <rect key="frame" x="0.0" y="0.0" width="350" height="24"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="H8z-0s-5dC">
+                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="K사 영상/스트리밍" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZdJ-G3-nBx">
+                                    <rect key="frame" x="33" y="0.0" width="317" height="24"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                    <color key="textColor" name="main-wh"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="zjo-FY-eKh" secondAttribute="bottom" id="6cW-sl-URS"/>
+                        <constraint firstItem="zjo-FY-eKh" firstAttribute="top" secondItem="FBN-a7-Flm" secondAttribute="top" id="cpn-jX-IQx"/>
+                        <constraint firstItem="zjo-FY-eKh" firstAttribute="leading" secondItem="FBN-a7-Flm" secondAttribute="leading" id="w1h-XW-Kzq"/>
+                        <constraint firstAttribute="trailing" secondItem="zjo-FY-eKh" secondAttribute="trailing" id="zr5-7A-Xgu"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" name="bg"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="FBN-a7-Flm" secondAttribute="bottom" constant="29" id="5cQ-3j-UJn"/>
+                <constraint firstAttribute="trailing" secondItem="FBN-a7-Flm" secondAttribute="trailing" constant="27" id="CzK-zD-gSb"/>
+                <constraint firstItem="FBN-a7-Flm" firstAttribute="leading" secondItem="XRT-2V-fU7" secondAttribute="leading" constant="16" id="I7m-xf-Zng"/>
+                <constraint firstItem="FBN-a7-Flm" firstAttribute="top" secondItem="XRT-2V-fU7" secondAttribute="top" constant="13" id="Wo7-tM-Mtd"/>
+            </constraints>
+            <point key="canvasLocation" x="-53" y="-12"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="logo" width="24" height="29"/>
+        <namedColor name="bg">
+            <color red="0.10588235294117647" green="0.10588235294117647" blue="0.10588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="main-wh">
+            <color red="0.99607843137254903" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
